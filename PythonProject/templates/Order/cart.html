@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>购物车 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .cart-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .book-image {
+            max-width: 100px;
+            height: auto;
+        }
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+        }
+        .total-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="row">
+            <div class="col-md-12">
+                <h2><i class="fa fa-shopping-cart"></i> 我的购物车</h2>
+                <hr>
+                
+                {% if cart_items %}
+                    {% if is_guest %}
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i> 您当前是游客模式，请 <a href="{% url 'Index:frontLogin' %}">登录</a> 后可以保存购物车信息。
+                        </div>
+                    {% endif %}
+                    
+                    {% for item in cart_items %}
+                    <div class="cart-item">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{ item.book.bookPhoto.url }}" alt="{{ item.book.bookName }}" class="book-image">
+                            </div>
+                            <div class="col-md-6">
+                                <h4>{{ item.book.bookName }}</h4>
+                                <p><strong>作者:</strong> {{ item.book.publish }}</p>
+                                <p><strong>出版社:</strong> {{ item.book.publish }}</p>
+                                <p><strong>单价:</strong> ¥{{ item.book.price }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <label>数量:</label>
+                                {% if is_guest %}
+                                    <input type="number" class="form-control quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.book.count }}" 
+                                           onchange="updateSessionQuantity('{{ item.book.barcode }}', this.value)">
+                                {% else %}
+                                    <input type="number" class="form-control quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.book.count }}" 
+                                           onchange="updateQuantity('{{ item.cartId }}', this.value)">
+                                {% endif %}
+                                <small class="text-muted">库存: {{ item.book.count }}</small>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>小计:</strong> ¥{{ item.subtotal|floatformat:2 }}</p>
+                                {% if is_guest %}
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSessionCartItem('{{ item.book.barcode }}')">
+                                        <i class="fa fa-trash"></i> 删除
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-danger btn-sm" onclick="deleteCartItem('{{ item.cartId }}')">
+                                        <i class="fa fa-trash"></i> 删除
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="total-section">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h3>总计: ¥{{ total_amount|floatformat:2 }}</h3>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if is_guest %}
+                                    <a href="{% url 'Index:frontLogin' %}" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-sign-in"></i> 登录后结算
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'Order:checkout' %}" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-credit-card"></i> 去结算
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center" style="padding: 50px;">
+                        <i class="fa fa-shopping-cart fa-3x text-muted"></i>
+                        <h3 class="text-muted">购物车是空的</h3>
+                        <p class="text-muted">快去选购心仪的图书吧！</p>
+                        <a href="{% url 'Book:frontList' %}" class="btn btn-primary">
+                            <i class="fa fa-book"></i> 浏览图书
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script type="text/javascript">
+function updateQuantity(cartId, quantity) {
+    $.ajax({
+        url: "{% url 'Order:update_cart' %}",
+        type: 'POST',
+        data: {
+            'cart_id': cartId,
+            'quantity': quantity,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.msg);
+            }
+        },
+        error: function(){
+            alert('修改数量失败，请重试');
+        }
+    });
+}
+function updateSessionQuantity(bookId, quantity) {
+    $.ajax({
+        url: "{% url 'Order:update_session_cart' %}",
+        type: 'POST',
+        data: {
+            'book_id': bookId,
+            'quantity': quantity,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                alert(response.msg);
+            }
+        },
+        error: function(){
+            alert('修改数量失败，请重试');
+        }
+    });
+}
+function deleteCartItem(cartId) {
+    if(confirm('确定要删除该商品吗？')) {
+        $.ajax({
+            url: "{% url 'Order:remove_from_cart' %}",
+            type: 'POST',
+            data: {
+                'cart_id': cartId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('删除失败，请重试');
+            }
+        });
+    }
+}
+function deleteSessionCartItem(bookId) {
+    if(confirm('确定要删除该商品吗？')) {
+        $.ajax({
+            url: "{% url 'Order:remove_from_session_cart' %}",
+            type: 'POST',
+            data: {
+                'book_id': bookId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('删除失败，请重试');
+            }
+        });
+    }
+}
+</script>
+</body>
+</html> 

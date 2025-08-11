@@ -1,0 +1,205 @@
+{% if request.resolver_match.url_name == 'index' %}
+<!--footer-->
+<style>
+/* 固定底部导航栏样式 */
+.footer-compact {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 8px 0 8px;
+  margin-top: 0;
+  font-size: 12px;
+  position: fixed;
+  bottom: -100px; /* 默认隐藏在底部下方 */
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  transition: bottom 0.3s ease; /* 添加平滑过渡效果 */
+}
+
+/* 显示底部导航栏的类 */
+.footer-compact.show {
+  bottom: 0;
+}
+
+.footer-compact h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #ecf0f1;
+}
+
+.footer-compact p {
+  margin-bottom: 3px;
+  color: #bdc3c7;
+  line-height: 1.2;
+  font-size: 11px;
+}
+
+.footer-brand {
+  margin-bottom: 8px;
+}
+
+.footer-contact {
+  margin-bottom: 8px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-info span {
+  color: #bdc3c7;
+  font-size: 11px;
+}
+
+.contact-info i {
+  margin-right: 8px;
+  color: #3498db;
+}
+
+.footer-bottom {
+  border-top: 1px solid #34495e;
+  padding-top: 5px;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.social-links {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.social-links a {
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #3498db;
+  transform: translateY(-2px);
+}
+
+.footer-bottom .social-links {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-bottom .copyright {
+  color: #bdc3c7;
+  font-size: 10px;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-bottom .copyright p {
+  margin: 0;
+}
+
+/* 为固定底部导航栏添加页面主体底部边距 */
+body {
+  padding-bottom: 20px !important; /* 减少底部边距，因为底部导航栏默认隐藏 */
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .contact-info {
+    align-items: center;
+  }
+  
+  .footer-compact {
+    padding: 10px 0 8px;
+  }
+  
+  body {
+    padding-bottom: 30px !important; /* 移动端减少底部边距 */
+  }
+}
+</style>
+<footer class="footer-compact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="footer-brand">
+                    <h4><i class="fa fa-book"></i> 书香阁</h4>
+                    <p>专业的图书售卖平台</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="footer-contact">
+                    <h4>联系我们</h4>
+                    <div class="contact-info">
+                        <span><i class="fa fa-phone"></i> 400-123-4567</span>
+                        <span><i class="fa fa-envelope"></i> 111111111@qq.com</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-weixin"></i></a>
+                    <a href="#"><i class="fa fa-qq"></i></a>
+                    <a href="#"><i class="fa fa-weibo"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="copyright">
+                <p>&copy; 2025 书香阁图书售卖平台. 版权所有.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// 控制底部导航栏显示的JavaScript
+// 只有首页采用滚动到底部才显示的逻辑
+
+document.addEventListener('DOMContentLoaded', function() {
+    const footer = document.querySelector('.footer-compact');
+    let isFooterVisible = false;
+
+    function checkFooter() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        // 当滚动到距离底部50px时显示底部导航栏
+        if (scrollTop + windowHeight >= documentHeight - 50) {
+            if (!isFooterVisible) {
+                footer.classList.add('show');
+                isFooterVisible = true;
+            }
+        } else {
+            if (isFooterVisible) {
+                footer.classList.remove('show');
+                isFooterVisible = false;
+            }
+        }
+    }
+
+    window.addEventListener('scroll', checkFooter);
+    // 页面加载时检查一次
+    setTimeout(checkFooter, 100);
+});
+</script>
+<!--footer-->
+{% endif %}

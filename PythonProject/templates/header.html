@@ -1,0 +1,80 @@
+<!--导航开始-->
+<nav class="navbar navbar-default navbar-fixed-top" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div class="container">
+        <!--小屏幕导航按钮和logo-->
+        <div class="navbar-header">
+            <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="border-color: white;">
+                <span class="icon-bar" style="background-color: white;"></span>
+                <span class="icon-bar" style="background-color: white;"></span>
+                <span class="icon-bar" style="background-color: white;"></span>
+            </button>
+            <a href="{% url 'Index:index' %}" class="navbar-brand" style="color: white; font-weight: 600; font-size: 1.5em;">
+                <i class="fa fa-book"></i> 书香阁
+            </a>
+        </div>
+        <!--小屏幕导航按钮和logo-->
+        <!--导航-->
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="{% url 'Index:index' %}" style="color: white;"><i class="fa fa-home"></i> 首页</a></li>
+                <li><a href="{% url 'BookType:frontList' %}" style="color: white;"><i class="fa fa-th-large"></i> 图书分类</a></li>
+                <li><a href="{% url 'Book:frontList' %}" style="color: white;"><i class="fa fa-shopping-bag"></i> 图书商城</a></li>
+                <li><a href="{% url 'Order:cart' %}" style="color: white;"><i class="fa fa-shopping-cart"></i> 购物车</a></li>
+                <li><a href="#" onclick="checkLoginForOrder();" style="color: white;"><i class="fa fa-list"></i> 我的订单</a></li>
+                <li><a href="{% url 'Index:login' %}" style="color: white;"><i class="fa fa-cog"></i> 后台管理</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if not request.session.user_name %}
+                <li><a href="{% url 'Index:register' %}" style="color: white;"><i class="fa fa-sign-in"></i> 注册</a></li>
+                <li><a href="{% url 'Index:frontLogin' %}" style="color: white;"><i class="fa fa-user"></i> 登录</a></li>
+                {% else %}
+                <li class="dropdown">
+                    <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">
+                        <i class="fa fa-user-circle"></i> {{ request.session.user_name }}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                        <li><a href="{% url 'Index:index' %}"><i class="fa fa-home"></i> 首页</a></li>
+                        <li><a href="{% url 'Order:cart' %}"><i class="fa fa-shopping-cart"></i> 购物车</a></li>
+                        <li><a href="{% url 'Order:order_list' %}"><i class="fa fa-list"></i> 我的订单</a></li>
+                        <li><a href="{% url 'Index:login' %}"><i class="fa fa-cog"></i> 后台管理</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'Index:frontLoginout' %}"><i class="fa fa-sign-out"></i> 退出登录</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!--导航-->
+    </div>
+</nav>
+<!--导航结束-->
+
+
+ {% csrf_token %}
+
+<!-- 隐藏字段，用于传递登录状态 -->
+<input type="hidden" id="userLoginStatus" value="{% if request.session.user_name %}logged_in{% else %}not_logged_in{% endif %}">
+
+
+
+
+
+
+<script>
+// 检查登录状态并处理订单查看
+function checkLoginForOrder() {
+    var loginStatus = $('#userLoginStatus').val();
+    
+    if (loginStatus === 'not_logged_in') {
+        // 未登录状态，显示提示并跳转到登录页面
+        if (confirm('查看订单需要先登录，是否现在登录？')) {
+            window.location.href = "{% url 'Index:frontLogin' %}";
+        }
+    } else {
+        // 已登录状态，直接跳转到订单页面
+        window.location.href = "{% url 'Order:order_list' %}";
+    }
+}
+</script>

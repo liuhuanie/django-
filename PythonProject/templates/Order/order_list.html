@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的订单 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .order-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .status-pending { color: #f39c12; }
+        .status-paid { color: #3498db; }
+        .status-shipped { color: #9b59b6; }
+        .status-completed { color: #27ae60; }
+        .status-cancelled { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="row">
+            <div class="col-md-12">
+                <h2><i class="fa fa-list"></i> 我的订单</h2>
+                <hr>
+                
+                {% if orders %}
+                    {% for order in orders %}
+                    <div class="order-item">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>订单号: {{ order.orderNo }}</h4>
+                                <p><strong>收货人:</strong> {{ order.receiver }}</p>
+                                <p><strong>联系电话:</strong> {{ order.phone }}</p>
+                                <p><strong>收货地址:</strong> {{ order.address }}</p>
+                                <p><strong>创建时间:</strong> {{ order.createTime|date:"Y-m-d H:i" }}</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <h3 class="text-danger">¥{{ order.totalAmount|floatformat:2 }}</h3>
+                                <p class="status-{{ order.status }}">
+                                    {% if order.status == 'pending' %}
+                                        <i class="fa fa-clock-o"></i> 待支付
+                                    {% elif order.status == 'paid' %}
+                                        <i class="fa fa-credit-card"></i> 已支付
+                                    {% elif order.status == 'shipped' %}
+                                        <i class="fa fa-truck"></i> 已发货
+                                    {% elif order.status == 'completed' %}
+                                        <i class="fa fa-check-circle"></i> 已完成
+                                    {% elif order.status == 'cancelled' %}
+                                        <i class="fa fa-times-circle"></i> 已取消
+                                    {% endif %}
+                                </p>
+                                <div class="btn-group">
+                                    <a href="{% url 'Order:order_detail' order.orderId %}" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-eye"></i> 查看详情
+                                    </a>
+                                    {% if order.status == 'pending' %}
+                                    <button class="btn btn-success btn-sm" onclick="payOrder('{{ order.orderId }}')">
+                                        <i class="fa fa-credit-card"></i> 立即支付
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="cancelOrder('{{ order.orderId }}')">
+                                        <i class="fa fa-times"></i> 取消订单
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center" style="padding: 50px;">
+                        <i class="fa fa-list fa-3x text-muted"></i>
+                        <h3 class="text-muted">暂无订单</h3>
+                        <p class="text-muted">快去选购心仪的图书吧！</p>
+                        <a href="{% url 'Book:frontList' %}" class="btn btn-primary">
+                            <i class="fa fa-book"></i> 浏览图书
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script type="text/javascript">
+function payOrder(orderId) {
+    if (confirm('确定要支付这个订单吗？')) {
+        $.ajax({
+            url: "{% url 'Order:pay_order' %}",
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.pay_url;
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('支付请求失败，请重试');
+            }
+        });
+    }
+}
+function cancelOrder(orderId) {
+    if (confirm('确定要取消这个订单吗？')) {
+        $.ajax({
+            url: "{% url 'Order:cancel_order' %}",
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('订单已取消！');
+                    location.reload();
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('取消订单失败，请重试');
+            }
+        });
+    }
+}
+</script>
+</body>
+</html> 

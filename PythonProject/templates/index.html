@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>书香阁 - 精品图书售卖平台</title>
+  <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+  <link href="{% static 'css/index.css' %}" rel="stylesheet">
+</head>
+<body>
+  <div class="main-container">
+    {% include 'header.html' %}
+    
+    <!-- 广告轮播开始 -->
+    <section id="main_ad" class="carousel slide" data-ride="carousel">
+      <!-- 指示器 -->
+      <ol class="carousel-indicators">
+        <li data-target="#main_ad" data-slide-to="0" class="active"></li>
+        <li data-target="#main_ad" data-slide-to="1"></li>
+        <li data-target="#main_ad" data-slide-to="2"></li>
+        <li data-target="#main_ad" data-slide-to="3"></li>
+      </ol>
+      
+      <!-- 轮播项 -->
+      <div class="carousel-inner" role="listbox">
+        <div class="item active carousel-slide-1">
+          <img src="{% static 'images/slider/slide_01_2000x410.jpg' %}" alt="轮播图1" style="width:100%;height:400px;object-fit:cover;">
+          <div class="carousel-caption">
+            <h2>欢迎来到书香阁</h2>
+            <p>发现知识的海洋，开启智慧之旅</p>
+          </div>
+        </div>
+        <div class="item carousel-slide-2">
+          <img src="{% static 'images/slider/slide_02_2000x410.jpg' %}" alt="轮播图2" style="width:100%;height:400px;object-fit:cover;">
+          <div class="carousel-caption">
+            <h2>精品图书推荐</h2>
+            <p>精选优质图书，满足您的阅读需求</p>
+          </div>
+        </div>
+        <div class="item carousel-slide-3">
+          <img src="{% static 'images/slider/slide_03_2000x410.jpg' %}" alt="轮播图3" style="width:100%;height:400px;object-fit:cover;">
+          <div class="carousel-caption">
+            <h2>便捷购物体验</h2>
+            <p>安全支付，快速配送，贴心服务</p>
+          </div>
+        </div>
+        <div class="item carousel-slide-4">
+          <img src="{% static 'images/slider/slide_04_2000x410.jpg' %}" alt="轮播图4" style="width:100%;height:400px;object-fit:cover;">
+          <div class="carousel-caption">
+            <h2>专业图书分类</h2>
+            <p>科学分类，快速找到您需要的图书</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 控制按钮 -->
+      <a class="left carousel-control" href="#main_ad" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">上一页</span>
+      </a>
+      <a class="right carousel-control" href="#main_ad" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">下一页</span>
+      </a>
+    </section>
+    <!-- /广告轮播结束 -->
+
+    <!-- 特色服务开始 -->
+    <section class="features-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>我们的特色服务</h2>
+          <p>为您提供最优质的图书购买体验</p>
+        </div>
+        
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-book"></i>
+              </div>
+              <h4>海量图书资源</h4>
+              <p>涵盖文学、科技、教育、生活等各个领域的优质图书，满足不同读者的需求</p>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-shopping-cart"></i>
+              </div>
+              <h4>便捷购物体验</h4>
+              <p>简单易用的购物车功能，支持在线支付，让您足不出户就能购买心仪图书</p>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-truck"></i>
+              </div>
+              <h4>快速配送服务</h4>
+              <p>专业的物流配送团队，确保图书安全快速送达，让您及时享受阅读乐趣</p>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-shield"></i>
+              </div>
+              <h4>品质保证</h4>
+              <p>所有图书均为正版，质量有保障，支持退换货服务，让您购物无忧</p>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-users"></i>
+              </div>
+              <h4>专业客服团队</h4>
+              <p>7×24小时在线客服，为您解答疑问，提供贴心的售前售后服务</p>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fa fa-gift"></i>
+              </div>
+              <h4>会员优惠活动</h4>
+              <p>丰富的会员权益和优惠活动，让您享受更多实惠，提升购物体验</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /特色服务结束 -->
+
+    <!-- 热门图书推荐开始 -->
+    <section class="hot-books-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>热门图书推荐</h2>
+          <p>精选优质图书，值得您拥有</p>
+        </div>
+        
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="book-card">
+              <div class="book-image book-image-1">
+                <div class="book-overlay">
+                  <a href="{% url 'Book:frontList' %}" class="btn">立即购买</a>
+                </div>
+              </div>
+              <div class="book-info">
+                <div class="book-title">PHP网站编程入门</div>
+                <div class="book-author">人民教育出版社</div>
+                <div class="book-price">¥35.50</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="book-card">
+              <div class="book-image book-image-2">
+                <div class="book-overlay">
+                  <a href="{% url 'Book:frontList' %}" class="btn">立即购买</a>
+                </div>
+              </div>
+              <div class="book-info">
+                <div class="book-title">中国近代史</div>
+                <div class="book-author">科技大学出版社</div>
+                <div class="book-price">¥39.90</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="book-card">
+              <div class="book-image book-image-3">
+                <div class="book-overlay">
+                  <a href="{% url 'Book:frontList' %}" class="btn">立即购买</a>
+                </div>
+              </div>
+              <div class="book-info">
+                <div class="book-title">Python项目开发案例集锦</div>
+                <div class="book-author">吉林大学出版社</div>
+                <div class="book-price">¥45.50</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="book-card">
+              <div class="book-image book-image-4">
+                <div class="book-overlay">
+                  <a href="{% url 'Book:frontList' %}" class="btn">立即购买</a>
+                </div>
+              </div>
+              <div class="book-info">
+                <div class="book-title">更多精彩图书</div>
+                <div class="book-author">点击查看更多</div>
+                <div class="book-price">¥0.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center browse-more-section">
+          <a href="{% url 'Book:frontList' %}" class="btn btn-primary btn-lg browse-more-btn">
+            <i class="fa fa-book"></i> 浏览更多图书
+          </a>
+        </div>
+      </div>
+    </section>
+    <!-- /热门图书推荐结束 -->
+
+    <!-- 统计数据开始 -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="stat-item">
+              <div class="stat-number">1000+</div>
+              <div class="stat-label">图书种类</div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="stat-item">
+              <div class="stat-number">5000+</div>
+              <div class="stat-label">注册用户</div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="stat-item">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">用户满意度</div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="stat-item">
+              <div class="stat-number">24h</div>
+              <div class="stat-label">客服响应</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /统计数据结束 -->
+
+    {% include 'footer.html' %}
+  </div>
+
+  <script src="{% static 'plugins/jquery.min.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap.js' %}"></script>
+  <script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>

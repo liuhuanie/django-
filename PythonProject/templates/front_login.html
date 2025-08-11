@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录 - 书香阁</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/animate.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .login-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .login-body {
+            padding: 40px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            text-align: center;
+            padding: 20px 30px;
+            border-top: 1px solid #e1e5e9;
+            background: #f8f9fa;
+        }
+        
+        .login-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #f0f0f0;
+            text-decoration: none;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'Index:index' %}" class="back-home">
+        <i class="fa fa-arrow-left"></i> 返回首页
+    </a>
+    
+    <div class="login-container">
+        <div class="login-header">
+            <h2><i class="fa fa-user-circle"></i> 用户登录</h2>
+            <p>欢迎回到书香阁，请登录您的账户</p>
+        </div>
+        
+        <div class="login-body">
+            <div id="alertMessage" class="alert"></div>
+            
+            <form id="loginForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="userName">
+                        <i class="fa fa-user"></i> 用户名
+                    </label>
+                    <input type="text" id="userName" name="userName" class="form-control" 
+                           placeholder="请输入用户名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fa fa-lock"></i> 密码
+                    </label>
+                    <input type="password" id="password" name="password" class="form-control" 
+                           placeholder="请输入密码" required>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <i class="fa fa-sign-in"></i> 登录
+                </button>
+            </form>
+            
+            <div class="loading">
+                <div class="spinner"></div>
+                <span style="margin-left: 10px;">登录中...</span>
+            </div>
+        </div>
+        
+        <div class="login-footer">
+            <p>还没有账户？ <a href="{% url 'Index:register' %}">立即注册</a></p>
+        </div>
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+                var userName = $('#userName').val();
+                var password = $('#password').val();
+                var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                if (!userName || !password) {
+                    showAlert('请填写完整的登录信息', 'danger');
+                    return;
+                }
+                // 显示加载状态
+                $('.btn-login').prop('disabled', true);
+                $('.loading').show();
+                $.ajax({
+                    url: "{% url 'Index:frontLogin' %}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'userName': userName,
+                        'password': password,
+                        'csrfmiddlewaretoken': csrf
+                    },
+                    success: function(obj) {
+                        if (obj.success) {
+                            showAlert(obj.msg, 'success');
+                            setTimeout(function() {
+                                window.location.href = "{% url 'Index:index' %}";
+                            }, 1500);
+                        } else {
+                            showAlert(obj.msg, 'danger');
+                        }
+                    },
+                    error: function() {
+                        showAlert('登录失败，请检查网络连接', 'danger');
+                    },
+                    complete: function() {
+                        // 隐藏加载状态
+                        $('.btn-login').prop('disabled', false);
+                        $('.loading').hide();
+                    }
+                });
+            });
+        });
+        function showAlert(message, type) {
+            var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            var icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            $('#alertMessage')
+                .removeClass('alert-success alert-danger')
+                .addClass(alertClass)
+                .html('<i class="fa ' + icon + '"></i> ' + message)
+                .show();
+        }
+    </script>
+</body>
+</html> 

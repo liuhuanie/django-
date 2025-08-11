@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>订单详情 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .order-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .book-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .book-image {
+            max-width: 80px;
+            height: auto;
+        }
+        .status-pending { color: #f39c12; }
+        .status-paid { color: #3498db; }
+        .status-shipped { color: #9b59b6; }
+        .status-completed { color: #27ae60; }
+        .status-cancelled { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="row">
+            <div class="col-md-12">
+                <h2><i class="fa fa-file-text"></i> 订单详情</h2>
+                <hr>
+                
+                <div class="order-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>订单信息</h4>
+                            <p><strong>订单号:</strong> {{ order.orderNo }}</p>
+                            <p><strong>订单状态:</strong> 
+                                <span class="status-{{ order.status }}">
+                                    {% if order.status == 'pending' %}
+                                        <i class="fa fa-clock-o"></i> 待支付
+                                    {% elif order.status == 'paid' %}
+                                        <i class="fa fa-credit-card"></i> 已支付
+                                    {% elif order.status == 'shipped' %}
+                                        <i class="fa fa-truck"></i> 已发货
+                                    {% elif order.status == 'completed' %}
+                                        <i class="fa fa-check-circle"></i> 已完成
+                                    {% elif order.status == 'cancelled' %}
+                                        <i class="fa fa-times-circle"></i> 已取消
+                                    {% endif %}
+                                </span>
+                            </p>
+                            <p><strong>创建时间:</strong> {{ order.createTime|date:"Y-m-d H:i:s" }}</p>
+                            {% if order.payTime %}
+                            <p><strong>支付时间:</strong> {{ order.payTime|date:"Y-m-d H:i:s" }}</p>
+                            {% endif %}
+                            {% if order.shipTime %}
+                            <p><strong>发货时间:</strong> {{ order.shipTime|date:"Y-m-d H:i:s" }}</p>
+                            {% endif %}
+                            {% if order.completeTime %}
+                            <p><strong>完成时间:</strong> {{ order.completeTime|date:"Y-m-d H:i:s" }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h4>收货信息</h4>
+                            <p><strong>收货人:</strong> {{ order.receiver }}</p>
+                            <p><strong>联系电话:</strong> {{ order.phone }}</p>
+                            <p><strong>收货地址:</strong> {{ order.address }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>商品清单</h3>
+                {% for item in order.items.all %}
+                <div class="book-item">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ item.book.bookPhoto.url }}" alt="{{ item.book.bookName }}" class="book-image">
+                        </div>
+                        <div class="col-md-6">
+                            <h4>{{ item.book.bookName }}</h4>
+                            <p><strong>作者:</strong> {{ item.book.publish }}</p>
+                            <p><strong>出版社:</strong> {{ item.book.publish }}</p>
+                            <p><strong>数量:</strong> {{ item.quantity }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p><strong>单价:</strong> ¥{{ item.price|floatformat:2 }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p><strong>小计:</strong> ¥{{ item.subtotal|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="text-right">
+                    <h3>订单总额: <span class="text-danger">¥{{ order.totalAmount|floatformat:2 }}</span></h3>
+                </div>
+                
+                <div class="text-center" style="margin-top: 30px;">
+                    {% if order.status == 'pending' %}
+                    <button class="btn btn-success btn-lg" onclick="payOrder('{{ order.orderId }}')">
+                        <i class="fa fa-credit-card"></i> 立即支付
+                    </button>
+                    <button class="btn btn-danger btn-lg" onclick="cancelOrder('{{ order.orderId }}')">
+                        <i class="fa fa-times"></i> 取消订单
+                    </button>
+                    {% endif %}
+                    <a href="{% url 'Order:order_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-arrow-left"></i> 返回订单列表
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script type="text/javascript">
+function payOrder(orderId) {
+    if (confirm('确定要支付这个订单吗？')) {
+        $.ajax({
+            url: "{% url 'Order:pay_order' %}",
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.pay_url;
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('支付请求失败，请重试');
+            }
+        });
+    }
+}
+function cancelOrder(orderId) {
+    if (confirm('确定要取消这个订单吗？')) {
+        $.ajax({
+            url: "{% url 'Order:cancel_order' %}",
+            type: 'POST',
+            data: {
+                'order_id': orderId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('订单已取消！');
+                    window.location.href = "{% url 'Order:order_list' %}";
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('取消订单失败，请重试');
+            }
+        });
+    }
+}
+</script>
+</body>
+</html> 

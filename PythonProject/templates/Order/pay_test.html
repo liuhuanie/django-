@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>支付测试 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .test-container {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .test-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="test-container">
+            <h2><i class="fa fa-credit-card"></i> 支付功能测试</h2>
+            <p class="lead">此页面用于测试支付功能</p>
+            
+            <div class="warning-box">
+                <h4><i class="fa fa-exclamation-triangle"></i> 测试模式说明</h4>
+                <p>当前系统运行在测试模式下，支付功能将使用模拟流程：</p>
+                <ul>
+                    <li>点击"创建测试订单并支付"将创建一个测试订单</li>
+                    <li>支付过程将直接跳转到支付成功页面</li>
+                    <li>不会实际调用支付宝接口</li>
+                    <li>订单状态将自动更新为已支付</li>
+                </ul>
+            </div>
+            
+            <div class="test-info">
+                <h4><i class="fa fa-info-circle"></i> 测试步骤</h4>
+                <ol>
+                    <li>点击下方的"创建测试订单并支付"按钮</li>
+                    <li>系统将创建一个测试订单（金额：99.99元）</li>
+                    <li>自动跳转到支付页面</li>
+                    <li>模拟支付成功，跳转到支付成功页面</li>
+                    <li>查看订单状态是否已更新为已支付</li>
+                </ol>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-success btn-lg" onclick="testPayment()">
+                        <i class="fa fa-credit-card"></i> 创建测试订单并支付
+                    </button>
+                    <a href="{% url 'Order:order_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-list"></i> 查看我的订单
+                    </a>
+                    <a href="{% url 'Book:frontList' %}" class="btn btn-info btn-lg">
+                        <i class="fa fa-book"></i> 浏览图书
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script>
+        function testPayment() {
+            if (confirm('确定要创建测试订单并跳转到支付吗？\n\n注意：这是测试模式，将直接模拟支付成功。')) {
+                // 创建测试订单
+                $.ajax({
+                    url: "{% url 'Order:create_test_order' %}",
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // 跳转到订单详情页面进行支付
+                            window.location.href = "{% url 'Order:order_detail' 0 %}".replace('0', response.order_id);
+                        } else {
+                            alert('创建测试订单失败：' + response.msg);
+                        }
+                    },
+                    error: function() {
+                        alert('创建测试订单失败，请重试');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html> 

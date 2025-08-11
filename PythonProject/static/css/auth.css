@@ -1,0 +1,359 @@
+/* 登录注册页面样式 */
+
+/* 页面背景 */
+.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* 登录注册表单容器 */
+.auth-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 表单头部 */
+.auth-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.auth-header p {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+/* 表单主体 */
+.auth-body {
+    padding: 40px 30px;
+}
+
+/* 表单组样式 */
+.auth-form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.auth-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.auth-form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.auth-form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.auth-form-group input.error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.auth-form-group input.success {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+
+/* 输入框图标 */
+.auth-form-group .input-icon {
+    position: absolute;
+    right: 15px;
+    top: 40px;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.auth-form-group input:focus + .input-icon {
+    color: #667eea;
+}
+
+/* 密码强度指示器 */
+.password-strength {
+    margin-top: 8px;
+    height: 4px;
+    background-color: #e1e5e9;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-strength-bar.weak {
+    background-color: #dc3545;
+    width: 25%;
+}
+
+.password-strength-bar.fair {
+    background-color: #ffc107;
+    width: 50%;
+}
+
+.password-strength-bar.good {
+    background-color: #17a2b8;
+    width: 75%;
+}
+
+.password-strength-bar.strong {
+    background-color: #28a745;
+    width: 100%;
+}
+
+/* 错误消息 */
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* 成功消息 */
+.success-message {
+    color: #28a745;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+.success-message.show {
+    display: block;
+}
+
+/* 提交按钮 */
+.auth-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+.auth-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 加载状态 */
+.auth-submit-btn.loading {
+    color: transparent;
+}
+
+.auth-submit-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 表单底部 */
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.auth-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* 切换表单按钮 */
+.auth-switch {
+    background: none;
+    border: none;
+    color: #667eea;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    margin-top: 15px;
+}
+
+.auth-switch:hover {
+    color: #764ba2;
+}
+
+/* 验证码样式 */
+.captcha-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.captcha-container input {
+    flex: 1;
+}
+
+.captcha-image {
+    width: 100px;
+    height: 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #e1e5e9;
+}
+
+/* 记住我选项 */
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.remember-me input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+.remember-me label {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 10px;
+        max-width: none;
+    }
+    
+    .auth-header {
+        padding: 20px;
+    }
+    
+    .auth-body {
+        padding: 30px 20px;
+    }
+    
+    .auth-header h2 {
+        font-size: 24px;
+    }
+}
+
+/* 社交登录按钮 */
+.social-login {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.social-login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.social-login-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #667eea;
+    color: #667eea;
+    text-decoration: none;
+}
+
+.social-login-btn i {
+    margin-right: 10px;
+    font-size: 16px;
+} 

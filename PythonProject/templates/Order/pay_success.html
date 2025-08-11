@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>支付成功 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .success-icon {
+            font-size: 80px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .order-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="success-container">
+            <div class="success-icon">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <h2 class="text-success">支付成功！</h2>
+            <p class="lead">您的订单已支付成功，我们会尽快为您发货。</p>
+            
+            <div class="order-info">
+                <h4><i class="fa fa-file-text"></i> 订单信息</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>订单号：</strong>{{ order.orderNo }}</p>
+                        <p><strong>支付时间：</strong>{{ order.payTime|date:"Y-m-d H:i:s" }}</p>
+                        <p><strong>支付金额：</strong>¥{{ order.totalAmount|floatformat:2 }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>收货人：</strong>{{ order.receiver }}</p>
+                        <p><strong>联系电话：</strong>{{ order.phone }}</p>
+                        <p><strong>收货地址：</strong>{{ order.address }}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                <h5><i class="fa fa-shopping-cart"></i> 商品清单</h5>
+                {% for item in order.items.all %}
+                <div class="order-item">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>{{ item.book.bookName }}</h6>
+                            <p class="text-muted">数量: {{ item.quantity }}</p>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <p class="text-primary">¥{{ item.price|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{% url 'Order:order_detail' order.orderId %}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-eye"></i> 查看订单详情
+                    </a>
+                    <a href="{% url 'Order:order_list' %}" class="btn btn-success btn-lg">
+                        <i class="fa fa-list"></i> 我的订单
+                    </a>
+                    <a href="{% url 'Book:frontList' %}" class="btn btn-info btn-lg">
+                        <i class="fa fa-shopping-bag"></i> 继续购物
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+</body>
+</html> 

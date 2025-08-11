@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>结算 - 图书售卖平台</title>
+    <link href="{% static 'plugins/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-dashen.css' %}" rel="stylesheet">
+    <style>
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .book-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .book-item:last-child {
+            border-bottom: none;
+        }
+        .book-image {
+            max-width: 60px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        
+        <div class="row">
+            <div class="col-md-8">
+                <h2><i class="fa fa-credit-card"></i> 订单结算</h2>
+                <hr>
+                
+                <form id="checkoutForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="receiver">收货人姓名 *</label>
+                        <input type="text" class="form-control" id="receiver" name="receiver" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">联系电话 *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">收货地址 *</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>支付方式</label>
+                        <div>
+                            <label class="radio-inline">
+                                <input type="radio" name="payment" value="alipay" checked> 
+                                <i class="fa fa-credit-card text-primary"></i> 支付宝支付
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="payment" value="wechat" disabled> 
+                                <i class="fa fa-wechat text-success"></i> 微信支付 (暂未开通)
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="payment" value="bank" disabled> 
+                                <i class="fa fa-university text-info"></i> 银行卡 (暂未开通)
+                            </label>
+                        </div>
+                        <small class="text-muted">目前仅支持支付宝支付，其他支付方式即将上线</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fa fa-check"></i> 提交订单
+                    </button>
+                </form>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="order-summary">
+                    <h3><i class="fa fa-shopping-cart"></i> 订单摘要</h3>
+                    <hr>
+                    
+                    {% for item in cart_items %}
+                    <div class="book-item">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <img src="{{ item.book.bookPhoto.url }}" alt="{{ item.book.bookName }}" class="book-image">
+                            </div>
+                            <div class="col-xs-9">
+                                <h5>{{ item.book.bookName }}</h5>
+                                <p class="text-muted">数量: {{ item.quantity }}</p>
+                                <p class="text-primary">¥{{ item.book.price|floatformat:2 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <strong>商品总计:</strong>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <strong>¥{{ total_amount|floatformat:2 }}</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <strong>运费:</strong>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <strong>¥0.00</strong>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4>应付总额:</h4>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <h4 class="text-danger">¥{{ total_amount|floatformat:2 }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'footer.html' %}
+    </div>
+
+    <script src="{% static 'plugins/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap.js' %}"></script>
+    <script type="text/javascript">
+$(function(){
+    $('#checkoutForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: "{% url 'Order:create_order' %}",
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = "{% url 'Order:order_detail' 0 %}".replace('0', response.order_id);
+                } else {
+                    alert(response.msg);
+                }
+            },
+            error: function(){
+                alert('订单创建失败，请重试');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html> 
